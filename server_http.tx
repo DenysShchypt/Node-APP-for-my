@@ -1,0 +1,38 @@
+const http = require('http');
+const fs = require('fs/promises');
+const url = require('url');
+const path = require('path');
+
+const contentType = {
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.css': 'text/css',
+    '.jpg': 'image/jpeg',
+    '.ico': 'image/x-icon',
+};
+
+http
+    .createServer(async (req, res) => {
+        // Аналізуємо url для обробки Get заптів
+        const { pathname } = url.parse(req.url);
+        //   Знаходимо ім'я файлу, який запросив клієнт через HTTP-запит
+        let filename = pathname.substring(1);
+        //   Тут ми відкидаємо знак ‘/’, з якого розпочинається шлях до файлу. Єдиним винятком є звернення до кореня сайту, і тоді необхідно віддавати файл index.html
+        if (pathname === '/') {
+            filename = 'index.html';
+        }
+        //   Визначаємо розширення файлу
+        const type = contentType[path.extname(filename)];
+        //   Встановлюємо заголовок
+        res.writeHead(200, { 'Content-Type': type });
+        // Перевіряємо, чи не надійшов запит на забораження від клієнта
+        if (type.includes('image')) {
+            const img = await fs.readFile(filename);
+            res.write(img, 'hex');
+        } else {
+            const content = await fs.readFile(filename, 'utf8');
+            res.write(content);
+        }
+        res.end();
+    })
+    .listen(3000, () => console.log('Listen server on port 3000'));
