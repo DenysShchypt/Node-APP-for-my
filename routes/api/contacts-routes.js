@@ -1,21 +1,21 @@
 import express from "express";
-import { getAll } from "../../controllers/contacts/getAll.js";
-import { getById } from "../../controllers/contacts/getById.js";
-import { addContact } from "../../controllers/contacts/addContact .js";
-import { updateContact } from "../../controllers/contacts/updateContact.js";
-import { deleteContact } from "../../controllers/contacts/deleteContact.js";
+import { ctrlWrapper,validateBody } from "../../decorators/index.js";
+import { addContact, deleteContact, getAll, getById, updateContact } from "../../controllers/contacts/index.js";
+import {contactAddSchema,contactUpdateSchema} from "../../schemas/contacts_schema.js"
+import {isEmptyBody} from "../../middlewares/index.js"
+
 // Створюємо об'єкт з маршрутами
 const router = express.Router()
 
 // Запит на головну сторінку контактів
-router.get("/", getAll);
+router.get("/", ctrlWrapper(getAll));
 // Запит контакта за ID
-router.get("/:id", getById);
+router.get("/:id", ctrlWrapper(getById));
 // Створення нового контакту
-router.post("/", addContact);
+router.post("/",isEmptyBody,validateBody(contactAddSchema) ,ctrlWrapper(addContact));
 //Оновлення контакту за ID
-router.put("/:id", updateContact);
+router.put("/:id",isEmptyBody,validateBody(contactUpdateSchema) , ctrlWrapper(updateContact));
 //Видалення контакту за ID
-router.delete("/:id", deleteContact);
+router.delete("/:id", ctrlWrapper(deleteContact));
 
 export default router;

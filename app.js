@@ -9,6 +9,7 @@ const formatsLogger = app.get("env")==="development"?"dev":"short";
 app.use(logger(formatsLogger))
 // Middleware for CORS questions
 app.use(cors());
+// Middleware для обробки тіла запиту(req.body) по заголовку Content-type в форматі json (application/json);
 app.use(express.json());
 // Обробка запитів на API за допомогою маршрутів
 app.use("/api/contacts", router)
@@ -16,5 +17,9 @@ app.use("/api/contacts", router)
 app.use((req,res)=>{
     res.status(404).json({message:'Not found'})
 });
-
+// next(error)=>Обробник помилок error. це middleware з 4ма параметрами
+app.use((err, req, res, next) => {
+    const{status=500,message="Server error"}=err;
+    res.status(status).json({ message});
+  });
 export default app;
