@@ -2,6 +2,9 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import router from "./routes/api/contacts-routes.js";
+import dotenv from "dotenv";
+// Додавання данних з env змінні оточення process.env
+dotenv.config();
  const app =express();//web-server 
 
 const formatsLogger = app.get("env")==="development"?"dev":"short";
