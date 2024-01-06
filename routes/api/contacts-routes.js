@@ -1,21 +1,24 @@
 import express from "express";
 import { ctrlWrapper,validateBody } from "../../decorators/index.js";
-import { addContact, deleteContact, getAll, getById, updateContact } from "../../controllers/contacts/index.js";
-import {contactAddSchema,contactUpdateSchema} from "../../schemas/contacts_schema.js"
-import {isEmptyBody} from "../../middlewares/index.js"
+import { addContact, deleteContact, getAll, getById, updateContact, updateFavorite } from "../../controllers/contacts/index.js";
+import {contactAddSchema,updatePatchSchema} from "../../models/contacts_schema.js"
+import {authenticate, isEmptyBody, isValidId} from "../../middlewares/index.js"
 
 // Створюємо об'єкт з маршрутами
-const router = express.Router()
-
+const routerContacts = express.Router();
+// Перевірка всіх маршрутів мідлваре authenticate
+routerContacts.use(authenticate);
 // Запит на головну сторінку контактів
-router.get("/", ctrlWrapper(getAll));
+routerContacts.get("/", ctrlWrapper(getAll));
 // Запит контакта за ID
-router.get("/:id", ctrlWrapper(getById));
+routerContacts.get("/:id",isValidId, ctrlWrapper(getById));
 // Створення нового контакту
-router.post("/",isEmptyBody,validateBody(contactAddSchema) ,ctrlWrapper(addContact));
+routerContacts.post("/",isEmptyBody,validateBody(contactAddSchema) ,ctrlWrapper(addContact));
 //Оновлення контакту за ID
-router.put("/:id",isEmptyBody,validateBody(contactUpdateSchema) , ctrlWrapper(updateContact));
+routerContacts.put("/:id",isValidId,isEmptyBody,validateBody(contactAddSchema) , ctrlWrapper(updateContact));
 //Видалення контакту за ID
-router.delete("/:id", ctrlWrapper(deleteContact));
+routerContacts.delete("/:id",isValidId, ctrlWrapper(deleteContact));
+//Оновлення контакту за ID окремого поля
+routerContacts.patch("/:id/favorite",isValidId,isEmptyBody,validateBody(updatePatchSchema), ctrlWrapper(updateFavorite));
 
-export default router;
+export default routerContacts;

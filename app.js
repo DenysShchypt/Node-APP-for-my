@@ -1,7 +1,8 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import router from "./routes/api/contacts-routes.js";
+import routerContacts from "./routes/api/contacts-routes.js";
+import routerUsers from "./routes/api/auth-routers.js";
 import dotenv from "dotenv";
 // Додавання данних з env змінні оточення process.env
 dotenv.config();
@@ -15,7 +16,8 @@ app.use(cors());
 // Middleware для обробки тіла запиту(req.body) по заголовку Content-type в форматі json (application/json);
 app.use(express.json());
 // Обробка запитів на API за допомогою маршрутів
-app.use("/api/contacts", router)
+app.use("/api/auth", routerUsers);
+app.use("/api/contacts", routerContacts);
 // Middleware для невірного запиту
 app.use((req,res)=>{
     res.status(404).json({message:'Not found'})

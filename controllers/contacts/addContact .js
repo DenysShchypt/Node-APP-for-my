@@ -1,7 +1,9 @@
-import { addNewContact } from "../../db/contacts.js";
+import { Contact } from "../../models/contacts_schema.js";
 
 const addContact = async (req, res) => {
-    const result = await addNewContact(req.body);
+    // додаємо id user який робить запит
+    const{_id:owner}= req.user;
+    const result = await Contact.create({...req.body,owner});
     res.status(201).json(result)
 };
 
