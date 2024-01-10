@@ -13,6 +13,9 @@ routerContacts.get("/", ctrlWrapper(getAll));
 // Запит контакта за ID
 routerContacts.get("/:id",isValidId, ctrlWrapper(getById));
 // Створення нового контакту
+// upload.single("") це коли очикується один файл
+// upload.array("",10) це коли очікується більше одного файлу
+// upload.fields([{name:"a",maxCount:5},{name:"b",maxCount:10}]) це коли очікується декілька файлів з різних полів
 routerContacts.post("/",isEmptyBody,validateBody(contactAddSchema) ,ctrlWrapper(addContact));
 //Оновлення контакту за ID
 routerContacts.put("/:id",isValidId,isEmptyBody,validateBody(contactAddSchema) , ctrlWrapper(updateContact));

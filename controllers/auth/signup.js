@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { HttpError } from "../../helpers/index.js";
 import User from "../../models/Users_schema.js";
+import gravatar from "gravatar";
 
 const signup = async(req,res)=>{
     // Шукаємо користувача в базі
@@ -11,8 +12,10 @@ const signup = async(req,res)=>{
     }
     // Хешуємо пароль за допомогою bcrypt
 const hashPassword = await bcrypt.hash(password,10);
+    // Cтворюємо тимчасову аватар
+    const avatarURL = gravatar.url(email);
 // Зберігаємо user в базі з захешованим паролем
-const newUser = await User.create({...req.body,password:hashPassword});
+const newUser = await User.create({...req.body,avatarURL,password:hashPassword});
 
 res.json({
     username:newUser.username,

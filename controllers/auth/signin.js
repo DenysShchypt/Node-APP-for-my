@@ -6,6 +6,7 @@ import { HttpError } from "../../helpers/index.js";
 import User from "../../models/Users_schema.js";
 
 const { JWT_SECRET } = process.env;
+
 const signin = async (req, res) => {
     const { email, password } = req.body;
     // Перевіряємо чи є користувач з таким email в базі
