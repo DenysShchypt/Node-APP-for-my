@@ -24,15 +24,17 @@ const limits = {
 // налаштування для middlewares filter чи можна зберігати файл
 
 const fileFilter = (req, file, callback) => {
-    const extention = req.originalname.split(".").pop();
+    const extention = file.originalname.split(".").pop();
     if (extention === "exe") {
         callback(HttpError(400, ".exe is not valid extention"))
     }
+    callback(null, file)
 };
 // Middleware яка приймає запит з format.data, зберігає файл в папці time, в req.body записує текст
 const upload = multer({
     storage,
-    limits
+    limits,
+    fileFilter
 });
 
 export default upload;

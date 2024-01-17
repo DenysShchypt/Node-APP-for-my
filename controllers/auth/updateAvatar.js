@@ -25,16 +25,17 @@ const updateAvatar = async (req, res) => {
     const { path: oldPath, filename } = req.file
     // Створюємо новий шлях до файлу
     const resultUpload = path.join(avatarsDir, filename)
+    // Змінюємо старий шлях на новий
+    await fs.rename(oldPath, resultUpload);
     // Оброби аватарку пакетом jimp і постав для неї розміри 250 на 250
-    Jimp.read(oldPath).then(image => {
+    await Jimp.read(resultUpload).then(image => {
         image.autocrop()
             .resize(250, 250)
-            .write(resultUpload)
+            .writeAsync(resultUpload)
     }).catch(error => {
         console.log(error.message);
     });
-    // Змінюємо старий шлях на новий
-    await fs.rename(oldPath, resultUpload);
+
     // Шлях де лишається файл
     const avatarURL = path.join("public", "avatars", filename);
     // Перезаписуємо на user avatarURL

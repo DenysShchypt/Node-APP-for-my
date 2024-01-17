@@ -1,14 +1,18 @@
 import express from "express";
 import { ctrlWrapper, validateBody } from "../../decorators/index.js";
 import { isEmptyBody, isValidId, authenticate, upload } from "../../middlewares/index.js"
-import { userSignupSchema, userSigninSchema, userSubscriptionSchema } from "../../models/Users_schema.js";
-import { getCurrent, signin, signout, signup, updateAvatar, updateSubscription } from "../../controllers/auth/index.js";
+import { userSignupSchema, userSigninSchema, userSubscriptionSchema, userEmailSchema } from "../../models/Users_schema.js";
+import { getCurrent, resendVerifyEmail, signin, signout, signup, updateAvatar, updateSubscription, verifyEmail } from "../../controllers/auth/index.js";
 
 // Створюємо об'єкт з маршрутами
 const routerUsers = express.Router();
 
 // Реєстрація користувача   
 routerUsers.post("/signup", isEmptyBody, validateBody(userSignupSchema), ctrlWrapper(signup));
+// Верифікація користувача
+routerUsers.get("/verify/:verificationToken", ctrlWrapper(verifyEmail));
+// Додавання повторної відправки email користувачу з посиланням для верифікації
+routerUsers.post("/verify", isEmptyBody, validateBody(userEmailSchema), ctrlWrapper(resendVerifyEmail));
 // Логінізація користувача
 routerUsers.post("/signin", isEmptyBody, validateBody(userSigninSchema), ctrlWrapper(signin));
 

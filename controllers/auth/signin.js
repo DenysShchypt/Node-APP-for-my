@@ -14,6 +14,11 @@ const signin = async (req, res) => {
     if (!user) {
         throw HttpError(401, "Email or password invalid")
     };
+    // Перевіряємо чи користувач підтвердив свій email
+    if (!user.verify) {
+        throw HttpError(401, "Email is not verify")
+    };
+
     // Перевіряємо чи збігається пароль з тим що в базі
     const passwordCompare = await bcrypt.compare(password, user.password);
     // Якщо пароль не підходить
